@@ -1,0 +1,7 @@
+Resolution has been reset once. Manually configuring your resolution and scale ratio if there any problem.
+Width=
+2560
+Height=
+1600
+Scale=
+125
