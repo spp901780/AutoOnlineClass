@@ -14,10 +14,10 @@ try:
     import pywintypes
 except ImportError:
     print('安装依赖库')
-    subprocess.call(['pip','install','pyautogui'])
-    subprocess.call(['pip','install','opencv-python'])
-    subprocess.call(['pip','install','pywin32'])
-    subprocess.call(['pip','install','pypiwin32'])
+    subprocess.call(['pip','install','pyautogui==0.9.54'])
+    subprocess.call(['pip','install','opencv-python==4.9.0.80'])
+    subprocess.call(['pip','install','pywin32==306'])
+    subprocess.call(['pip','install','pypiwin32==223'])
 
     import pyautogui as pag
     import cv2
