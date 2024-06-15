@@ -74,7 +74,7 @@ def changeResolution():
     #由于PyautoGUI与获取Windows缩放的代码有冲突
     #会导致获取的缩放始终为100%
     #暂时使用另一程序实现
-    subprocess.call(["python", '.\ChangeRes.py'])
+    subprocess.call(["python", cwd+'\ChangeRes.py'])
 
 """
 以下为通用的封装函数
