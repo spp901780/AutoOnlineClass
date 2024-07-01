@@ -2,6 +2,6 @@ Resolution has been reset once. Manually configuring your resolution and scale r
 Width=
 2560
 Height=
-1600
+1440
 Scale=
 125
