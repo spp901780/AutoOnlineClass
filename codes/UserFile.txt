@@ -1,11 +1,7 @@
-<<<<<<< HEAD
-Resolution has been reset once. Manually configuring your resolution and scale ratio if there any problem.
-Width=
+UserConfig
+Width = 
 2560
-Height=
+Height = 
 1440
-Scale=
+Scale = 
 125
-=======
-
->>>>>>> 94a8719a4bfbf4a668c891fe2098f51072924664

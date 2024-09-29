@@ -31,7 +31,7 @@ except ImportError:
 cwd = path.abspath(path.dirname(__file__))
 pngsGroupLocation = path.abspath(path.join(cwd, path.pardir)) + r'\PngsGroup'
 pag.PAUSE = 0   
-pngsLocation = pngsGroupLocation + '1'
+pngsLocation = ''
 print(pngsLocation)
 
 
@@ -137,30 +137,18 @@ def undisplayOption():
     rad2_1.grid_forget()
     rad2_2.grid_forget()
 
-def closeSetupGui():
-    #确定按钮的回调函数
-    #关闭窗口
-    setupWindow.quit()
-    setupWindow.destroy()
+
 
 def displaySetupGui():
     global setupWindow
     setupWindow = tk.Tk()
     setupWindow.title("设置窗口")
-    setupWindow.geometry('500x200')
+    setupWindow.geometry('500x250')
     
     #调整分辨率按钮
-    btn1 = tk.Button(setupWindow, text='调整分辨率', command= changeResolution).grid(column=0, row=0)
-    btn2 = tk.Button(setupWindow, text='恢复分辨率', command= resetResolution).grid(column=1, row=0)
-
-    #注册第二个选项相关组件
-    global lb2, rad2_1, rad2_2, isQuestion
-    lb2 = tk.Label(setupWindow, text=' 2.选择小节后是否有题目')
-    isQuestion = tk.IntVar()
-    isQuestion.set(0)
-    rad2_1 = tk.Radiobutton(setupWindow, width=20, text='有题目', variable= isQuestion, value=1)
-    rad2_2 = tk.Radiobutton(setupWindow, text='无题目', variable= isQuestion, value=0)
-
+    tk.Button(setupWindow, text='调整分辨率', command= changeResolution).grid(column=0, row=0)
+    tk.Button(setupWindow, text='恢复分辨率', command= resetResolution).grid(column=1, row=0)
+    
     #注册第一个选项相关组件
     lb1 = tk.Label(setupWindow, text=' 1.选择平台')
     lb1.grid(column=0, row=1, sticky=tk.W)
@@ -171,10 +159,36 @@ def displaySetupGui():
     rad1_2 = tk.Radiobutton(setupWindow, text='智慧树(Experimental)', variable= classChoice, value='智慧树', command=undisplayOption)
     rad1_1.grid(column=0, row=2, sticky=tk.W)
     rad1_2.grid(column=1, row=2, sticky=tk.W)
+    
+    #注册第二个选项相关组件
+    global lb2, rad2_1, rad2_2, isQuestion
+    lb2 = tk.Label(setupWindow, text=' 2.选择小节后是否有题目')
+    isQuestion = tk.IntVar()
+    isQuestion.set(0)
+    rad2_1 = tk.Radiobutton(setupWindow, width=20, text='有题目', variable= isQuestion, value=1)
+    rad2_2 = tk.Radiobutton(setupWindow, text='无题目', variable= isQuestion, value=0)
 
+    #注册第三个选项相关组件
+    selected_number = tk.StringVar()
+    natural_numbers = [str(i) for i in range(1, 5)]
+    selected_number.set(natural_numbers[0])
+    tk.Label(setupWindow, text='3.选择PngsGroup').grid(column=0, row=5, sticky=tk.W)
+    option_menu = tk.OptionMenu(setupWindow, selected_number, *natural_numbers)
+    option_menu.grid(column=1, row=5)
+
+
+    def closeSetupGui():
+        #确定按钮的回调函数
+        global pngsLocation
+        pngsLocation = pngsGroupLocation + selected_number.get()
+        #关闭窗口
+        setupWindow.quit()
+        setupWindow.destroy()
+    
+        
     #注册确认按钮组件
     btn = tk.Button(setupWindow, text='确认', command=closeSetupGui)
-    btn.grid(column=3, row=5)
+    btn.grid(column=3, row=6)
 
     setupWindow.protocol("WM_DELETE_WINDOW", exitProgram)#注册手动关闭窗口回调函数
     setupWindow.mainloop()
