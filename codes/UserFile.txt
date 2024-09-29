@@ -1,7 +1,1 @@
-UserConfig
-Width = 
-2560
-Height = 
-1440
-Scale = 
-125
+
