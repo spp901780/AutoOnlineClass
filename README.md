@@ -23,7 +23,17 @@
 
 #############
   
-  
+
+![图片](https://github.com/user-attachments/assets/0ba07a30-618f-4bd9-81d0-e60174db85bb)
+在设置菜单中设置好参数。
+
+![图片](https://github.com/user-attachments/assets/615965b3-5c32-4302-851f-166c089c541f)
+浏览器调整至如上界面，将浏览器全屏。
+
+点击设置菜单的确认按钮，5秒后脚本开始运行。
+关闭cmd窗口即中止运行
+
+
   
 ## 注意
 
