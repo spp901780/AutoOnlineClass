@@ -216,6 +216,93 @@ def cx_skipQuestion():
     except pag.ImageNotFoundException:
         return
 
+def cx_getVideoLocation(tempLocation ) -> list[int]: 
+    """
+    获取视频播放位置，返回视频四角坐标
+    """
+    screenshot = pag.screenshot()
+    point_x, point_y = pag.center(tempLocation)
+    
+    backgoround_color = screenshot[point_x + 200, point_y]
+    
+    row_blank_witdh = 200
+    col_blank_witdh = 100
+    isBlank_y = point_y
+    while True:
+        isBlank = True    
+        for i in range(point_x + 200 - int(row_blank_witdh/2), point_x + 200 + int(col_blank_witdh/2)):
+            if(screenshot[i, isBlank_y] != backgoround_color):
+                isBlank = False
+                break
+        if (isBlank == False):
+            videoLocation_top = isBlank_y + 1
+            break
+        else:
+            isBlank_y += 1
+    
+    isBlank_y += 200
+    
+    blank_count = 0
+    while True:
+        isBlank = True
+        for i in range(point_x + 200 - int(row_blank_witdh/2), point_x + 200 + int(col_blank_witdh/2)):
+            if(screenshot[i, isBlank_y] != backgoround_color):
+                isBlank = False
+                break
+        if (isBlank == True):
+            blank_count += 1
+        else:
+            blank_count = 0
+        
+        if(blank_count == 10):
+            videoLocation_bottom = isBlank_y - 10
+            break
+        
+        isBlank_y += 1
+    
+    isBlank_x = point_x + 200
+    isBlank_y = int((videoLocation_top + videoLocation_bottom)/2)
+    
+    blank_count = 0
+    while True:
+        isBlank = True
+        for i in range(isBlank_y - int(col_blank_witdh/2), isBlank_y + int(col_blank_witdh/2)):
+            if(screenshot[isBlank_x, i] != backgoround_color):
+                isBlank = False
+                break
+        
+        if(isBlank == False):
+            blank_count += 1
+        else:
+            blank_count = 0
+        
+        if(blank_count == 10):
+            videoLocation_left = isBlank_x + 10 
+            break
+        isBlank_x -= 1
+    
+    isBlank_x = point_x + 200
+    blank_count = 0
+    while True:
+        isBlank = True
+        for i in range(isBlank_y - int(col_blank_witdh/2), isBlank_y + int(col_blank_witdh/2)):
+            if(screenshot[isBlank_x, i] != backgoround_color):
+                isBlank = False
+                break
+        
+        if(isBlank == False):
+            blank_count += 1
+        else:
+            blank_count = 0
+        
+        if(blank_count == 10):
+            videoLocation_right = isBlank_x + 10 
+            break
+        isBlank_x += 1
+        
+    return [videoLocation_top, videoLocation_bottom, videoLocation_left, videoLocation_right]
+    
+    
 def cx_playVideo():
     """
     播放视频，包含弹出题目处理
@@ -223,37 +310,61 @@ def cx_playVideo():
     tempLocation = qLocate("cx_point",0.95)
     print("find point")
     print(tempLocation)
-    mouseMove(tempLocation, 375, 355) #偏移了播放键相对于任务点的位置
-    time.sleep(1)
-    pag.move(0, -20, 0.5, pag.easeOutQuad)
-    pag.move(0, 20, 0.5, pag.easeOutQuad)
-    tempLocation = qLocate("Pause")
-    if not tempLocation is None:
-        try:
-            print(pngsLocation + r'\Replay.png')
-            tempLocation = pag.locateAllOnScreen(pngsLocation + r'\Replay.png',confidence=0.9)
-            replayCountBefore = len(list(tempLocation))
-        except:
-            replayCountBefore = 0
-        
+    
+    # 利用画面变化判断是否播放完毕
+    videoLocation = cx_getVideoLocation(tempLocation)
+    pag.moveTo(int((videoLocation[0] + videoLocation[1])/2), int((videoLocation[2] + videoLocation[3])/2))
+    time.sleep(0.1)
+    pag.leftClick()
+    
+    screenPic = pag.screenshot()
+    videoLocation = screenPic[videoLocation[0]:videoLocation[1], videoLocation[2]:videoLocation[3]]
+    
+    while True:
         time.sleep(5)
-        waitCount = 0
-        while (1):
-            tempLocation = qLocate("Submit")
-            if not tempLocation is None:
-                cx_skipQuestion()
-            time.sleep(10)
-            waitCount += 1
-            print(waitCount)
-            if(waitCount >=240):
-                break
-            try:
-                tempLocation = pag.locateAllOnScreen(pngsLocation + r'\Replay.png',confidence=0.9)
-                replayCountAfter = len(list(tempLocation))
-            except:
-                replayCountAfter = 0
-            if(replayCountBefore != replayCountAfter):
-                break
+        videoCapture_last = videoCapture
+        videoCapture = screenPic[videoLocation[0]:videoLocation[1], videoLocation[2]:videoLocation[3]]
+        
+        
+    
+    
+    
+    # mouseMove(tempLocation, 375, 355) #偏移了播放键相对于任务点的位置
+    # time.sleep(1)
+    # pag.move(0, -20, 0.5, pag.easeOutQuad)
+    # pag.move(0, 20, 0.5, pag.easeOutQuad)
+    
+    # 利用重播键判定视频是否播放完毕
+    # tempLocation = qLocate("Pause")
+    # if not tempLocation is None:
+    #     try:
+    #         print(pngsLocation + r'\Replay.png')
+    #         tempLocation = pag.locateAllOnScreen(pngsLocation + r'\Replay.png',confidence=0.9)
+    #         replayCountBefore = len(list(tempLocation))
+    #     except:
+    #         replayCountBefore = 0
+        
+    #     time.sleep(5)
+    #     waitCount = 0
+    #     while (1):
+    #         tempLocation = qLocate("Submit")
+    #         if not tempLocation is None:
+    #             cx_skipQuestion()
+    #         time.sleep(10)
+    #         waitCount += 1
+    #         print(waitCount)
+    #         if(waitCount >=240):
+    #             break
+    #         try:
+    #             tempLocation = pag.locateAllOnScreen(pngsLocation + r'\Replay.png',confidence=0.9)
+    #             replayCountAfter = len(list(tempLocation))
+    #         except:
+    #             replayCountAfter = 0
+    #         if(replayCountBefore != replayCountAfter):
+    #             break
+
+
+
 
 def cx_startChapter():
     """
