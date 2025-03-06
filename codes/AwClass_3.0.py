@@ -311,7 +311,7 @@ def cx_playVideo():
     print("find point")
     print(tempLocation)
     
-    # 利用画面变化判断是否播放完毕
+    # 找到视频位置并开始播放
     videoLocation = cx_getVideoLocation(tempLocation)
     pag.moveTo(int((videoLocation[0] + videoLocation[1])/2), int((videoLocation[2] + videoLocation[3])/2))
     time.sleep(0.1)
@@ -325,6 +325,31 @@ def cx_playVideo():
         videoCapture_last = videoCapture
         videoCapture = screenPic[videoLocation[0]:videoLocation[1], videoLocation[2]:videoLocation[3]]
         
+        # 检测视频是否开始播放
+        difference = cv2.subtract(videoCapture, videoCapture_last)
+        result = not cv2.countNonZero(difference)
+        if (result != True):
+            continue
+        
+        freezedCount = 0
+        waitCount = 0
+        while True:
+            time.sleep(10)
+            videoCapture_last = videoCapture
+            videoCapture = screenPic[videoLocation[0]:videoLocation[1], videoLocation[2]:videoLocation[3]]
+            difference = cv2.subtract(videoCapture, videoCapture_last)
+            result = not cv2.countNonZero(difference)
+            if(result != True):
+                tempLocation = qLocate("Submit")
+                if not tempLocation is None:
+                    cx_skipQuestion()
+                else:
+                    freezedCount += 1
+            
+            if(freezedCount == 10 or waitCount == 240):
+                return
+            
+            
         
     
     
@@ -378,7 +403,7 @@ def cx_startChapter():
             print("findpoint")
             print(tempLocation)
             x1, y1 = pag.center(tempLocation)
-            while(y1>=700):
+            while(y1>=270):
                 pag.scroll(-80)
                 time.sleep(0.1)
                 try:
@@ -388,8 +413,8 @@ def cx_startChapter():
             cx_playVideo()
             searchCoumt = 0
         else:
-            pag.scroll(-200)
-            time.sleep(0.1)
+            pag.scroll(-50)
+            time.sleep(0.04)
             searchCoumt += 1
 
 def cx_locateNextChapter(isQuestion:bool):
